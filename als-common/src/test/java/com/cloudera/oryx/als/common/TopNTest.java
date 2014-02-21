@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -46,10 +47,10 @@ public final class TopNTest extends OryxTest {
     List<NumericIDValue> top3 = TopN.selectTopN(candidates.iterator(), 3);
     assertNotNull(top3);
     assertEquals(3, top3.size());
-    assertEquals(3L, top3.get(0).getID());
-    assertEquals(3.0f, top3.get(0).getValue());
-    assertEquals(1L, top3.get(2).getID());
-    assertEquals(1.0f, top3.get(2).getValue());
+    assertEquals(1L, top3.get(0).getID());
+    assertEquals(1.0f, top3.get(0).getValue());
+    assertEquals(3L, top3.get(2).getID());
+    assertEquals(3.0f, top3.get(2).getValue());
   }
 
   @Test
@@ -58,10 +59,10 @@ public final class TopNTest extends OryxTest {
     List<NumericIDValue> top3 = TopN.selectTopN(candidates.iterator(), 3);
     assertNotNull(top3);
     assertEquals(3, top3.size());
-    assertEquals(4L, top3.get(0).getID());
-    assertEquals(4.0f, top3.get(0).getValue());
-    assertEquals(2L, top3.get(2).getID());
-    assertEquals(2.0f, top3.get(2).getValue());
+    assertEquals(1L, top3.get(0).getID());
+    assertEquals(1.0f, top3.get(0).getValue());
+    assertEquals(3L, top3.get(2).getID());
+    assertEquals(3.0f, top3.get(2).getValue());
   }
 
   @Test
@@ -70,24 +71,11 @@ public final class TopNTest extends OryxTest {
     List<NumericIDValue> top3 = TopN.selectTopN(candidates.iterator(), 3);
     assertNotNull(top3);
     assertEquals(3, top3.size());
-    assertEquals(20L, top3.get(0).getID());
-    assertEquals(20.0f, top3.get(0).getValue());
-    assertEquals(18L, top3.get(2).getID());
-    assertEquals(18.0f, top3.get(2).getValue());
+    assertEquals(1L, top3.get(0).getID());
+    assertEquals(1.0f, top3.get(0).getValue());
+    assertEquals(3L, top3.get(2).getID());
+    assertEquals(3.0f, top3.get(2).getValue());
   }
-
-  @Test
-  public void testTopOfManyIntoQueueMultithreaded() {
-    BlockingQueue<NumericIDValue> top3 = Queues.newLinkedBlockingQueue();
-    float[] queueLeastValue = { Float.NEGATIVE_INFINITY };
-    List<NumericIDValue> candidates = makeNCandidates(20);
-    TopN.selectTopNIntoQueueMultithreaded(top3, queueLeastValue, candidates.iterator(), 3);
-    assertNotNull(top3);
-    assertEquals(3, top3.size());
-    assertEquals(18L, top3.peek().getID());
-    assertEquals(18.0f, top3.peek().getValue());
-  }
-
 
   private static List<NumericIDValue> makeNCandidates(int n) {
     List<NumericIDValue> candidates = Lists.newArrayListWithCapacity(n);

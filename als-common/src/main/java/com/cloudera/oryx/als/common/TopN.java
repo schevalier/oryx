@@ -57,7 +57,7 @@ public final class TopN {
    * @return Initialized {@link Queue} suitable for use in this class
    */
   public static Queue<NumericIDValue> initialQueue(int n) {
-    return new PriorityQueue<NumericIDValue>(n + 2, ByValueAscComparator.INSTANCE);
+    return new PriorityQueue<NumericIDValue>(n + 2, Collections.reverseOrder(ByValueAscComparator.INSTANCE));
   }
 
   /**
@@ -76,7 +76,7 @@ public final class TopN {
         long itemID = value.getID();
         float valueScore = value.getValue();
         if (topN.size() >= n) {
-          if (valueScore > topN.peek().getValue()) {
+          if (valueScore < topN.peek().getValue()) {
             NumericIDValue recycled = topN.poll();
             recycled.set(itemID, valueScore);
             topN.add(recycled);
@@ -116,7 +116,7 @@ public final class TopN {
             if (topN.size() >= n) {
               float currentQueueLeastValue = topN.peek().getValue();
               localQueueLeastValue = currentQueueLeastValue;
-              if (valueScore > currentQueueLeastValue) {
+              if (valueScore < currentQueueLeastValue) {
                 NumericIDValue recycled = topN.poll();
                 recycled.set(itemID, valueScore);
                 topN.add(recycled);
@@ -146,7 +146,7 @@ public final class TopN {
       Preconditions.checkNotNull(removed);
     }
     List<NumericIDValue> result = Lists.newArrayList(topN);
-    Collections.sort(result, Collections.reverseOrder(ByValueAscComparator.INSTANCE));
+    Collections.sort(result, ByValueAscComparator.INSTANCE);
     return result;
   }
 
